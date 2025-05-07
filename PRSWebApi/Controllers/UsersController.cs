@@ -88,8 +88,7 @@ namespace PRSWebApi.Controllers
 
 
 
-        [HttpPost]
-        [Route("api/login")]
+        [HttpPost("api/login")]
         public async Task<ActionResult<User>> Login(UserLoginDTO _user)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == _user.Username && u.Password == _user.Password);

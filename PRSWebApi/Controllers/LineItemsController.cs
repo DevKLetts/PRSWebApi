@@ -51,7 +51,7 @@ namespace PRSWebApi.Controllers
 
         // PUT: api/LineItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutLineItem(LineItem lineItem)
         {
             if (!LineItemExists(lineItem.Id))
