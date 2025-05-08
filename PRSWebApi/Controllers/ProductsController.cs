@@ -46,7 +46,7 @@ namespace PRSWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
-            if (id != product.ProductId)
+            if (id != product.ID)
             {
                 return BadRequest();
             }
@@ -81,7 +81,7 @@ namespace PRSWebApi.Controllers
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
+            return CreatedAtAction("GetProduct", new { id = product.ID }, product);
         }
 
         // DELETE: api/Products/5
@@ -102,7 +102,7 @@ namespace PRSWebApi.Controllers
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.ProductId == id);
+            return _context.Products.Any(e => e.ID == id);
         }
     }
 }

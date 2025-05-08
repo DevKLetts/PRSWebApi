@@ -47,7 +47,7 @@ namespace PRSWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVendor(int id, Vendor vendor)
         {
-            if (id != vendor.VendorId)
+            if (id != vendor.ID)
             {
                 return BadRequest();
             }
@@ -81,7 +81,7 @@ namespace PRSWebApi.Controllers
             _context.Vendors.Add(vendor);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetVendor", new { id = vendor.VendorId }, vendor);
+            return CreatedAtAction("GetVendor", new { id = vendor.ID }, vendor);
         }
 
         // DELETE: api/Vendors/5
@@ -102,7 +102,7 @@ namespace PRSWebApi.Controllers
 
         private bool VendorExists(int id)
         {
-            return _context.Vendors.Any(e => e.VendorId == id);
+            return _context.Vendors.Any(e => e.ID == id);
         }
     }
 }

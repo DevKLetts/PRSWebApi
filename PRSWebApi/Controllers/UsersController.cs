@@ -49,7 +49,7 @@ namespace PRSWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != user.UserId)
+            if (id != user.ID)
             {
                 return BadRequest();
             }
@@ -83,12 +83,12 @@ namespace PRSWebApi.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            return CreatedAtAction("GetUser", new { id = user.ID }, user);
         }
 
 
 
-        [HttpPost("api/login")]
+        [HttpPost("login")]
         public async Task<ActionResult<User>> Login(UserLoginDTO _user)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == _user.Username && u.Password == _user.Password);
@@ -120,7 +120,7 @@ namespace PRSWebApi.Controllers
 
         private bool UserExists(int id)
         {
-            return _context.Users.Any(e => e.UserId == id);
+            return _context.Users.Any(e => e.ID == id);
         }
     }
 }

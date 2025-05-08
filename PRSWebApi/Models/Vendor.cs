@@ -12,8 +12,8 @@ namespace PRSWebApi.Models;
 public partial class Vendor
 {
     [Key]
-    [Column("VendorId")]
-    public int VendorId { get; set; }
+    [Column("ID")]
+    public int ID { get; set; }
 
     [StringLength(10)]
     [Unicode(false)]

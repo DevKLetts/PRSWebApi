@@ -11,11 +11,11 @@ namespace PRSWebApi.Models;
 public partial class Request
 {
     [Key]
-    [Column("RequestId")]
-    public int RequestId { get; set; }
+    [Column("ID")]
+    public int ID { get; set; }
 
-    [Column("UserId")]
-    public int UserId { get; set; }
+    [Column("UserID")]
+    public int UserID { get; set; }
 
     [StringLength(20)]
     [Unicode(false)]

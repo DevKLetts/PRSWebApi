@@ -8,18 +8,18 @@ using Microsoft.EntityFrameworkCore;
 namespace PRSWebApi.Models;
 
 [Table("LineItem")]
-[Index("RequestId", "ProductId", Name = "req_pdt", IsUnique = true)]
+[Index("RequestID", "ProductID", Name = "req_pdt", IsUnique = true)]
 public partial class LineItem
 {
     [Key]
-    [Column("LiId")]
-    public int Id { get; set; }
+    [Column("ID")]
+    public int ID { get; set; }
 
     [Column("RequestId")]
-    public int RequestId { get; set; }
+    public int RequestID { get; set; }
 
     [Column("ProductId")]
-    public int ProductId { get; set; }
+    public int ProductID { get; set; }
 
     public int Quantity { get; set; }
 

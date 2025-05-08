@@ -8,15 +8,15 @@ using Microsoft.EntityFrameworkCore;
 namespace PRSWebApi.Models;
 
 [Table("Product")]
-[Index("VendorId", "PartNumber", Name = "vendor_part", IsUnique = true)]
+[Index("VendorID", "PartNumber", Name = "vendor_part", IsUnique = true)]
 public partial class Product
 {
     [Key]
-    [Column("ProductId")]
-    public int ProductId { get; set; }
+    [Column("ID")]
+    public int ID { get; set; }
 
-    [Column("VendorId")]
-    public int VendorId { get; set; }
+    [Column("VendorID")]
+    public int VendorID { get; set; }
 
     [StringLength(50)]
     [Unicode(false)]

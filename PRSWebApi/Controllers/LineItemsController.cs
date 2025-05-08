@@ -39,7 +39,7 @@ namespace PRSWebApi.Controllers
             var lineItem = await _context.LineItems
                 //.Include(li => li.Product)
                 //.Include(li => li.Request)
-                .FirstOrDefaultAsync(li => li.Id == id);
+                .FirstOrDefaultAsync(li => li.ID == id);
 
             if (lineItem == null)
             {
@@ -52,9 +52,9 @@ namespace PRSWebApi.Controllers
         // PUT: api/LineItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLineItem(LineItem lineItem)
+        public async Task<IActionResult> PutLineItem(int ID, LineItem lineItem)
         {
-            if (!LineItemExists(lineItem.Id))
+            if (!LineItemExists(lineItem.ID))
             {
                 return NotFound();
             }
@@ -65,11 +65,11 @@ namespace PRSWebApi.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                await UpdateTotal(lineItem.RequestId);
+                await UpdateTotal(lineItem.RequestID);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LineItemExists(lineItem.Id))
+                if (!LineItemExists(lineItem.ID))
                 {
                     return NotFound();
                 }
@@ -87,7 +87,7 @@ namespace PRSWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<LineItem>> PostLineItem(LineItem lineItem)
         {
-            var product = await _context.Products.FindAsync(lineItem.ProductId);
+            var product = await _context.Products.FindAsync(lineItem.ProductID);
             if (product == null)
             {
                 return BadRequest();
@@ -96,7 +96,7 @@ namespace PRSWebApi.Controllers
             _context.LineItems.Add(lineItem);
             await _context.SaveChangesAsync();
 
-            await UpdateTotal(lineItem.RequestId);
+            await UpdateTotal(lineItem.RequestID);
 
             return Ok(lineItem);
         }
@@ -114,8 +114,7 @@ namespace PRSWebApi.Controllers
             _context.LineItems.Remove(lineItem);
             await _context.SaveChangesAsync();
 
-            // Recalc total for request
-            await UpdateTotal(lineItem.RequestId);
+            await UpdateTotal(lineItem.RequestID);
             return NoContent();
         }
 
@@ -126,7 +125,7 @@ namespace PRSWebApi.Controllers
         {
             var request = await _context.Requests
                 .Include(r => r.LineItems)
-                .FirstOrDefaultAsync(r => r.RequestId == reqId);
+                .FirstOrDefaultAsync(r => r.ID == reqId);
 
             if (request == null)
             {
@@ -149,9 +148,9 @@ namespace PRSWebApi.Controllers
             if (request != null)
             {
                 request.Total = await _context.LineItems
-                .Where(li => li.RequestId == reqId && li.ProductId != null) 
+                .Where(li => li.RequestID == reqId && li.ProductID != null) 
                 .SumAsync(li => li.Quantity * _context.Products
-                                                      .Where(p => p.ProductId == (int)li.ProductId) 
+                                                      .Where(p => p.ID == (int)li.ProductID) 
                                                       .Select(p => p.Price)
                                                       .FirstOrDefault());
 
@@ -160,7 +159,7 @@ namespace PRSWebApi.Controllers
         }
         private bool LineItemExists(int id)
         {
-            return _context.LineItems.Any(e => e.Id == id);
+            return _context.LineItems.Any(e => e.ID == id);
         }
     }
 }

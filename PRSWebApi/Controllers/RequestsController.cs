@@ -47,7 +47,7 @@ namespace PRSWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRequest(int id, Request request)
         {
-            if (id != request.RequestId)
+            if (id != request.ID)
             {
                 return BadRequest();
             }
@@ -69,7 +69,6 @@ namespace PRSWebApi.Controllers
                     throw;
                 }
             }
-
             return NoContent();
         }
 
@@ -81,8 +80,8 @@ namespace PRSWebApi.Controllers
         {
             var request = new Models.Request
             {
-                UserId = (int)requestDTO.UserId,
-                RequestNumber = getNextRequestNumber(), // Generates the request number
+                UserID = (int)requestDTO.UserID,
+                RequestNumber = GetNextRequestNumber(),
                 Description = requestDTO.Description,
                 Justification = requestDTO.Justification,
                 DateNeeded = requestDTO.DateNeeded,
@@ -96,20 +95,8 @@ namespace PRSWebApi.Controllers
             _context.Requests.Add(request);
             await _context.SaveChangesAsync();
 
+            return CreatedAtAction("GetRequest", new { id = request.ID }, request);
 
-            return CreatedAtAction(nameof(GetRequest), new { id = request.RequestId }, new
-            {
-                id = request.RequestId,
-                userId = request.UserId,
-                requestNumber = request.RequestNumber,
-                description = request.Description,
-                justification = request.Justification,
-                dateNeeded = request.DateNeeded,
-                deliveryMode = request.DeliveryMode,
-                status = request.Status,
-                total = request.Total,
-                submittedDate = request.SubmittedDate
-            });
         }
         // DELETE: api/Requests/5
         [HttpDelete("{id}")]
@@ -128,16 +115,20 @@ namespace PRSWebApi.Controllers
         }
 
         // Generate new request number
-        private string getNextRequestNumber()
+        private string GetNextRequestNumber()
         {
             // requestNumber format: R2409230011
             // 11 chars, 'R' + YYMMDD + 4 digit # w/ leading zeros
             string requestNbr = "R";
             // add YYMMDD string
             DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-            requestNbr += today.ToString("yyMMdd");
-            // get maximum request number from db
-            string maxReqNbr = _context.Requests.Max( r => r.RequestNumber);
+            string datePart = today.ToString("yyMMdd");
+            requestNbr += datePart;
+            // get maximum request number from db **for today**
+            string maxReqNbr = _context.Requests
+                                       .Where(r => r.RequestNumber.StartsWith("R" + datePart))
+                                       .Max(r => r.RequestNumber);
+            
             String reqNbr = "";
             if (maxReqNbr != null)
             {
@@ -167,12 +158,6 @@ namespace PRSWebApi.Controllers
                 return NotFound();
             }
 
-
-            if (request.Status != "NEW")
-            {
-                return BadRequest();
-            }
-
             request.Status = request.Total <= 50 ? "APPROVED" : "REVIEW";
             request.SubmittedDate = DateTime.Now;
 
@@ -192,7 +177,7 @@ namespace PRSWebApi.Controllers
             }
 
             var request = await _context.Requests
-                                        .Where(r => r.Status == "REVIEW" && r.UserId != userId)
+                                        .Where(r => r.Status == "REVIEW" && r.UserID != userId)
                                         .ToListAsync();
             return Ok(request);
         }
@@ -215,26 +200,22 @@ namespace PRSWebApi.Controllers
         // To protect from over
         // ing attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("reject/{id}")]
-        public async Task<IActionResult> RejectRequest(int id, [FromBody] RejectDTO rejectDTO)
+        public async Task<IActionResult> RejectRequest(int id, [FromBody] string reason)
         {
-
             var request = await _context.Requests.FindAsync(id);
             if (request == null)
             {
                 return NotFound();
             }
-
-
             request.Status = "REJECTED";
-            request.ReasonForRejection = rejectDTO.ReasonForRejection;
+            request.ReasonForRejection = reason;
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
-
         private bool RequestExists(int id)
         {
-            return _context.Requests.Any(e => e.RequestId == id);
+            return _context.Requests.Any(e => e.ID == id);
         }
 
     }

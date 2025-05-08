@@ -12,8 +12,8 @@ namespace PRSWebApi.Models;
 public partial class User
 {
     [Key]
-    [Column("UserId")]
-    public int UserId { get; set; }
+    [Column("ID")]
+    public int ID { get; set; }
 
     [StringLength(20)]
     [Unicode(false)]
