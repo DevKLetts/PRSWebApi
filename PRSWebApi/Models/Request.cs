@@ -10,11 +10,11 @@ namespace PRSWebApi.Models;
 [Table("Request")]
 public partial class Request
 {
-    [Key]
-    [Column("ID")]
+    //[Key]
+    //[Column("ID")]
     public int ID { get; set; }
 
-    [Column("UserID")]
+    //[Column("UserID")]
     public int UserID { get; set; }
 
     [StringLength(20)]
@@ -50,11 +50,11 @@ public partial class Request
     public string? ReasonForRejection { get; set; }
 
     //[InverseProperty("Request")]
-    [JsonIgnore]
+    //[JsonIgnore]
     public virtual ICollection<LineItem> LineItems { get; set; } = new List<LineItem>();
 
-    //[ForeignKey("UserId")]
-    //[InverseProperty("Requests")]
-    [JsonIgnore]
+    [ForeignKey("UserID")]
+    [InverseProperty("Requests")]
+    //[JsonIgnore]
     public virtual User? User { get; set; } = null!;
 }

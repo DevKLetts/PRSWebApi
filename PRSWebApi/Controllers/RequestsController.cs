@@ -25,14 +25,18 @@ namespace PRSWebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Request>>> GetRequests()
         {
-            return await _context.Requests.ToListAsync();
+            return await _context.Requests
+                .Include(r => r.User) //loading user properties
+                .ToListAsync();
         }
 
         // GET: api/Requests/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Request>> GetRequest(int id)
         {
-            var request = await _context.Requests.FindAsync(id);
+            var request = await _context.Requests
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.ID == id);
 
             if (request == null)
             {
@@ -178,6 +182,7 @@ namespace PRSWebApi.Controllers
 
             var request = await _context.Requests
                                         .Where(r => r.Status == "REVIEW" && r.UserID != userId)
+                                        .Include(r => r.User)
                                         .ToListAsync();
             return Ok(request);
         }

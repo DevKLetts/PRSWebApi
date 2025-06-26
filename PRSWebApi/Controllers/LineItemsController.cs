@@ -27,9 +27,9 @@ namespace PRSWebApi.Controllers
         public async Task<ActionResult<IEnumerable<LineItem>>> GetLineItems()
         {
             return await _context.LineItems
-                                //.Include(li => li.Product)
-                                //.Include(li => li.Request)
-                                 .ToListAsync();
+                                .Include(li => li.Product)
+                                .Include(li => li.Request)
+                                .ToListAsync();
         }
 
         // GET: api/LineItems/5
@@ -37,8 +37,8 @@ namespace PRSWebApi.Controllers
         public async Task<ActionResult<LineItem>> GetLineItem(int id)
         {
             var lineItem = await _context.LineItems
-                //.Include(li => li.Product)
-                //.Include(li => li.Request)
+                .Include(li => li.Product)
+                .Include(li => li.Request)
                 .FirstOrDefaultAsync(li => li.ID == id);
 
             if (lineItem == null)
@@ -121,18 +121,25 @@ namespace PRSWebApi.Controllers
 
 
         [HttpGet("lines-for-req/{reqId}")]
-        public async Task<IActionResult> GetLineItemsForRequest(int reqId)
+        public async Task<ActionResult<LineItem>> GetLineItemsForRequest(int reqId)
         {
-            var request = await _context.Requests
-                .Include(r => r.LineItems)
-                .FirstOrDefaultAsync(r => r.ID == reqId);
+            //var request = await _context.Requests
+            //    .Include(r => r.LineItems)
+            //    .FirstOrDefaultAsync(r => r.ID == reqId);
 
-            if (request == null)
-            {
-                return NotFound();
-            }
+            //if (request == null)
+            //{
+            //    return NotFound();
+            //}
 
-            var lineItems = request.LineItems;
+            //request.LineItems;
+            var lineItems = await _context.LineItems
+                .Where(li => li.RequestID == reqId)
+                .Include(li => li.Product)
+                .ThenInclude(p => p.Vendor)
+                .Include(li => li.Request)
+                .ThenInclude(r => r.User)
+                .ToListAsync();
 
             if (lineItems == null || lineItems.Count == 0)
             {

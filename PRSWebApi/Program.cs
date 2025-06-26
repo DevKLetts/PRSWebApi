@@ -4,13 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-// for the Open API
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddControllersWithViews();
 
 // ignores circular references
 builder.Services.AddControllers().AddJsonOptions(opt =>
@@ -22,7 +15,25 @@ builder.Services.AddControllers().AddJsonOptions(opt =>
 builder.Services.AddDbContext<PrsDbContext>(options =>  
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:4200") // Angular dev server
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
+// Add services to the container.
+
+// for the Open API
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -31,6 +42,9 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+// Apply CORS before routing
+app.UseCors("AllowAngularDev");
 
 // Open API related
 if (app.Environment.IsDevelopment())
@@ -51,3 +65,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+
+

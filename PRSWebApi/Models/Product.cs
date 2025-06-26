@@ -8,14 +8,14 @@ using Microsoft.EntityFrameworkCore;
 namespace PRSWebApi.Models;
 
 [Table("Product")]
-[Index("VendorID", "PartNumber", Name = "vendor_part", IsUnique = true)]
+//[Index("VendorID", "PartNumber", Name = "vendor_part", IsUnique = true)]
 public partial class Product
 {
-    [Key]
-    [Column("ID")]
+    //[Key]
+    //[Column("ID")]
     public int ID { get; set; }
 
-    [Column("VendorID")]
+    //[Column("VendorID")]
     public int VendorID { get; set; }
 
     [StringLength(50)]
@@ -38,11 +38,11 @@ public partial class Product
     public string? PhotoPath { get; set; }
 
     //[InverseProperty("Product")]
-    [JsonIgnore]
+    //[JsonIgnore]
     public virtual ICollection<LineItem> LineItems { get; set; } = new List<LineItem>();
 
-    //[ForeignKey("VendorId")]
+    //[ForeignKey("VendorID")]
     //[InverseProperty("Products")]
     //[JsonIgnore]
-    //public virtual Vendor Vendor { get; set; } = null!;
+    public virtual Vendor Vendor { get; set; } = null!;
 }

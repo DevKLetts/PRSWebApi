@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 namespace PRSWebApi.Models;
 
 [Table("User")]
-[Index("Username", Name = "UQ__User__536C85E498454DCF", IsUnique = true)]
-[Index("Username", Name = "uname", IsUnique = true)]
+//[Index("Username", Name = "UQ__User__536C85E498454DCF", IsUnique = true)]
+//[Index("Username", Name = "uname", IsUnique = true)]
 public partial class User
 {
-    [Key]
-    [Column("ID")]
+    //[Key]
+    //[Column("ID")]
     public int ID { get; set; }
 
     [StringLength(20)]
@@ -44,5 +44,8 @@ public partial class User
     public bool? Admin { get; set; }
 
     //[InverseProperty("User")]
-    //public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+    //public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+
+
 }

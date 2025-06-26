@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 namespace PRSWebApi.Models;
 
 [Table("Vendor")]
-[Index("Code", Name = "vcode", IsUnique = true)]
+//[Index("Code", Name = "vcode", IsUnique = true)]
 public partial class Vendor
 {
-    [Key]
-    [Column("ID")]
+    //[Key]
+    //[Column("ID")]
     public int ID { get; set; }
 
     [StringLength(10)]
@@ -48,6 +48,8 @@ public partial class Vendor
     public string Email { get; set; } = null!;
 
     //[InverseProperty("Vendor")]
-    [JsonIgnore]
+    //[JsonIgnore]
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    //public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+
 }
